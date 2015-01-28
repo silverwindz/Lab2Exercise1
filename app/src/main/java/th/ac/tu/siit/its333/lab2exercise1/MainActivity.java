@@ -43,6 +43,7 @@ public class MainActivity extends ActionBarActivity {
         String[] tokens = e.split("((?<=\\+)|(?=\\+))|((?<=\\-)|(?=\\-))|((?<=\\*)|(?=\\*))|((?<=/)|(?=/))");
         int ans =0;
         String op = "+";
+        if (e.length() > 0){
         for(int i=0; i < tokens.length ;i++) {
             if (i % 2 == 0) {
                 int x = Integer.parseInt(tokens[i]);
@@ -58,6 +59,7 @@ public class MainActivity extends ActionBarActivity {
             } else {
                 op = tokens[i];
             }
+        }
         }
 
         TextView tvAns = (TextView)findViewById(R.id.tvAns);
