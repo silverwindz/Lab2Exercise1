@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +15,8 @@ public class MainActivity extends ActionBarActivity {
 
     // expr = the current string to be calculated
     StringBuffer expr;
+    int answer;
+    int memory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,8 @@ public class MainActivity extends ActionBarActivity {
     public void updateExprDisplay() {
         TextView tvExpr = (TextView)findViewById(R.id.tvExpr);
         tvExpr.setText(expr.toString());
+        TextView tvAns = (TextView)findViewById(R.id.tvAns);
+        tvAns.setText(Integer.toString(answer));
     }
 
     public void recalculate() {
@@ -36,6 +41,28 @@ public class MainActivity extends ActionBarActivity {
         //reference: http://stackoverflow.com/questions/2206378/how-to-split-a-string-but-also-keep-the-delimiters
         String e = expr.toString();
         String[] tokens = e.split("((?<=\\+)|(?=\\+))|((?<=\\-)|(?=\\-))|((?<=\\*)|(?=\\*))|((?<=/)|(?=/))");
+        int ans =0;
+        String op = "+";
+        for(int i=0; i < tokens.length ;i++) {
+            if (i % 2 == 0) {
+                int x = Integer.parseInt(tokens[i]);
+                if (op.equals("+")) {
+                    ans = ans + x;
+                } else if (op.equals("-")) {
+                    ans = ans - x;
+                } else if (op.equals("*")) {
+                    ans = ans * x;
+                } else if (op.equals("/")) {
+                    ans = ans / x;
+                }
+            } else {
+                op = tokens[i];
+            }
+        }
+
+        TextView tvAns = (TextView)findViewById(R.id.tvAns);
+        tvAns.setText(Integer.toString(ans));
+        answer=ans;
     }
 
     public void digitClicked(View v) {
@@ -53,24 +80,74 @@ public class MainActivity extends ActionBarActivity {
         //IF the last character in expr is not an operator and expr is not "",
         //THEN append the clicked operator and updateExprDisplay,
         //ELSE do nothing
+        char o = expr.charAt(expr.length()-1);
+        String d = ((Button)v).getText().toString();
+        if (o!='+' && o!='-' && o!='*' && o!='/' && o!=' '){
+            expr.append(d);
+            updateExprDisplay();
+        } else {
+
+        }
+        recalculate();
+    }
+
+    public void equalClicked(View v){
+        TextView tvExpr = (TextView)findViewById(R.id.tvExpr);
+        tvExpr.setText(Integer.toString(answer));
+
     }
 
     public void ACClicked(View v) {
         //Clear expr and updateExprDisplay
         expr = new StringBuffer();
+        answer = 0;
         updateExprDisplay();
         //Display a toast that the value is cleared
         Toast t = Toast.makeText(this.getApplicationContext(),
                 "All cleared", Toast.LENGTH_SHORT);
         t.show();
+
+
     }
 
     public void BSClicked(View v) {
         //Remove the last character from expr, and updateExprDisplay
         if (expr.length() > 0) {
             expr.deleteCharAt(expr.length()-1);
+            recalculate();
             updateExprDisplay();
         }
+    }
+
+    public void Mplus(View v){
+        memory = memory + answer;
+        Toast t = Toast.makeText(this.getApplicationContext(),
+                "Memory is " + memory, Toast.LENGTH_SHORT);
+        t.show();
+    }
+
+    public void Mminus(View v){
+        memory = memory - answer;
+        Toast t = Toast.makeText(this.getApplicationContext(),
+                "Memory is " + memory, Toast.LENGTH_SHORT);
+        t.show();
+    }
+
+    public void Mr(View v){
+        TextView tvExpr = (TextView)findViewById(R.id.tvExpr);
+        tvExpr.setText(Integer.toString(memory));
+        TextView tvAns = (TextView)findViewById(R.id.tvAns);
+        tvAns.setText(Integer.toString(memory));
+        Toast t = Toast.makeText(this.getApplicationContext(),
+                "Memory is " + memory, Toast.LENGTH_SHORT);
+        t.show();
+    }
+
+    public void Mc(View v){
+        memory = 0;
+        Toast t = Toast.makeText(this.getApplicationContext(),
+                "Memory is " + memory, Toast.LENGTH_SHORT);
+        t.show();
     }
 
     @Override
